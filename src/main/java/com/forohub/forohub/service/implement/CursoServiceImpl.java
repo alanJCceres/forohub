@@ -17,7 +17,6 @@ public class CursoServiceImpl implements CursoService {
     private final CursoRepository cursoRepository;
     private final CursoMapper cursoMapper;
     public CursoDTO crearCurso(CursoDTO curso){
-        System.out.println(curso.getNombre()+" "+curso.getCategoria());
         Curso nuevo = cursoRepository.save(cursoMapper.toEntity(curso));
         return cursoMapper.toDTO(nuevo);
     }
