@@ -11,6 +11,7 @@ import com.forohub.forohub.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,24 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtService.generateRefreshToken(usuario);
         return new TokenResponse(jwtToken, refreshToken);
     }
-    public TokenResponse refreshToken(String refreshToken){
-        return null;
+    public TokenResponse refreshToken(final String refreshToken){
+        if(refreshToken == null || !refreshToken.startsWith("Bearer ")){
+            throw new IllegalArgumentException("Invalid Bearer token");
+        }
+
+        final String refreshToken2 = refreshToken.substring(7);
+        final String userEmail = jwtService.extractUserName(refreshToken2);
+        if(userEmail == null || userEmail.isEmpty()){
+            throw new IllegalArgumentException("Invalid Refresh Token");
+        }
+
+        final Usuario usuario = usuarioRepository.findByCorreo(userEmail)
+                .orElseThrow(()-> new UsernameNotFoundException(userEmail));
+        if(!jwtService.isTokenValid(refreshToken2,usuario)){
+            throw new IllegalArgumentException("Invalid Refresh Token");
+        }
+
+        final String accessToken = jwtService.generateToken(usuario);
+        return new TokenResponse(accessToken, refreshToken2);
     }
 }

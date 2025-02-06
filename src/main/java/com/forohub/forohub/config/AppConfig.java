@@ -26,6 +26,7 @@ public class AppConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+    @Bean
     public UserDetailsService userDetailsService(){
         return username -> {
             final Usuario usuario = usuarioRepository.findByCorreo(username)
