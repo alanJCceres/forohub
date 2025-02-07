@@ -3,11 +3,14 @@ package com.forohub.forohub.service.implement;
 import com.forohub.forohub.model.Usuario;
 import com.forohub.forohub.service.JwtService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -34,6 +37,14 @@ public class JwtServiceImpl implements JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
         return jwtToken.getSubject();
+    }
+    public String extractIdFromToken(String token) {
+        Claims jwtToken = Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return jwtToken.getId();
     }
     public boolean isTokenValid(final String token, final Usuario usuario){
         final String userName = extractUserName(token);
@@ -64,5 +75,16 @@ public class JwtServiceImpl implements JwtService {
     private SecretKey getSignInKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    public void verificarToken(String token){
+        try {
+            String tokenWithoutBearer = token.substring(7);
+            Jwts.parser()
+                    .verifyWith(getSignInKey())
+                    .build()
+                    .parseSignedClaims(tokenWithoutBearer);
+        } catch (JwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid JWT token");
+        }
     }
 }
