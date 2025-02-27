@@ -25,7 +25,6 @@ public class Respuesta {
     @Column(length = 36, unique = true, nullable = false)
     private String uuid;
     private String mensaje;
-    private String autor;
     @CreatedDate
     private Date createdAt;
     @LastModifiedDate
