@@ -8,11 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface PerfilMapper {
-    PerfilMapper INSTANCE = Mappers.getMapper(PerfilMapper.class);
-    @Mapping(source = "nombre", target = "nombre")
-    @Mapping(source = "ci", target = "ci")
     Perfil toEntity(PerfilDTO perfilDTO);
-    @Mapping(source = "nombre", target = "nombre")
-    @Mapping(source = "ci", target = "ci")
     PerfilDTO toDTO(Perfil perfil);
 }

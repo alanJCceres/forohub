@@ -8,13 +8,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
-    UsuarioMapper INSTANCE = Mappers.getMapper(UsuarioMapper.class);
-    @Mapping(source = "nombre", target = "nombre")
-    @Mapping(source = "correo", target = "correo")
-    @Mapping(source = "contrasenia", target = "contrasenia")
     Usuario toEntity(RegisterRequest usuario);
-    @Mapping(source = "nombre", target = "nombre")
-    @Mapping(source = "correo", target = "correo")
-    @Mapping(source = "contrasenia", target = "contrasenia")
     RegisterRequest toRegisterRequest(Usuario usuario);
 }

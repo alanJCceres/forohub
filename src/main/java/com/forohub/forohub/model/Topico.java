@@ -37,4 +37,7 @@ public class Topico {
     private Usuario usuario;
     @OneToMany(mappedBy = "topico")
     private List<Respuesta> respuestas;
+    public Topico(String id){
+        this.uuid = id;
+    }
 }
