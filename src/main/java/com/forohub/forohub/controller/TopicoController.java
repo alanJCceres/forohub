@@ -1,5 +1,6 @@
 package com.forohub.forohub.controller;
 
+import com.forohub.forohub.dtos.PaginacionDTO;
 import com.forohub.forohub.dtos.TopicoDTO;
 import com.forohub.forohub.service.TopicoService;
 import jakarta.validation.Valid;
@@ -28,7 +29,8 @@ public class TopicoController {
         return ResponseEntity.created(uri).body(topico);
     }
     @GetMapping
-    public ResponseEntity<Page<TopicoDTO>> getAllTopicos(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader, Pageable pageable) {
-        return ResponseEntity.ok(topicoService.getTopicos(pageable,authHeader));
+    public ResponseEntity<PaginacionDTO<TopicoDTO>> getAllTopicos(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader, Pageable pageable) {
+        Page<TopicoDTO> topicos = topicoService.getTopicos(pageable,authHeader);
+        return ResponseEntity.ok(new PaginacionDTO<>(topicos));
     }
 }
