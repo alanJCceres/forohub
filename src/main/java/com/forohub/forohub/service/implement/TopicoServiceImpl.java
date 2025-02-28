@@ -9,6 +9,8 @@ import com.forohub.forohub.repository.UsuarioRepository;
 import com.forohub.forohub.service.JwtService;
 import com.forohub.forohub.service.TopicoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,6 +41,19 @@ public class TopicoServiceImpl implements TopicoService {
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no existe");
         }
-
+    }
+    public Page<TopicoDTO> getTopicos(Pageable pageable,String token){
+        final String token2 = token.substring(7);
+        if(!token.startsWith("Bearer ") || token2.length() < 20 || token2.split("\\.").length != 3){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Bearer token");
+        }
+        jwtService.verificarToken(token);
+        final String id = jwtService.extractIdFromToken(token2);
+        Optional<Usuario> getUsuario = usuarioRepository.findByUuid(id);
+        if(getUsuario.isPresent()){
+            return topicoRepository.findByUsuarioUuid(id,pageable).map(topicoMapper::toDTO);
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El usuario no existe");
+        }
     }
 }
