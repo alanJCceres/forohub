@@ -5,6 +5,8 @@ import com.forohub.forohub.service.TopicoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,5 +26,9 @@ public class TopicoController {
         TopicoDTO topico = topicoService.saveTopico(topicoDTO, authHeader);
         URI uri = uriBuilder.path("topico/{id}").buildAndExpand(topico.getUuid()).toUri();
         return ResponseEntity.created(uri).body(topico);
+    }
+    @GetMapping
+    public ResponseEntity<Page<TopicoDTO>> getAllTopicos(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader, Pageable pageable) {
+        return ResponseEntity.ok(topicoService.getTopicos(pageable,authHeader));
     }
 }
