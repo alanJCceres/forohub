@@ -1,6 +1,7 @@
 package com.forohub.forohub.service.implement;
 
 import com.forohub.forohub.dtos.PerfilDTO;
+import com.forohub.forohub.dtos.PerfilResponseDTO;
 import com.forohub.forohub.mapper.PerfilMapper;
 import com.forohub.forohub.model.Perfil;
 import com.forohub.forohub.model.Usuario;
@@ -23,8 +24,18 @@ public class PerfilServiceImpl implements PerfilService {
     private final PerfilMapper perfilMapper;
 
 
-    public PerfilDTO getPerfil(){
-        return null;
+    public PerfilResponseDTO getPerfil(String token,String id){
+        final String token2 = token.substring(7);
+        if(token == null || !token.startsWith("Bearer ") || token2.length() < 20 || token2.split("\\.").length != 3){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Bearer token");
+        }
+        jwtService.verificarToken(token);
+        Optional<Perfil> perfil = perfilRepository.findByUuid(id);
+        if(perfil.isPresent()){
+            return perfilMapper.toResponseDTO(perfil.get());
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Perfil no encontrado");
+        }
     }
     public PerfilDTO savePerfil(PerfilDTO perfil,String token){
         final String token2 = token.substring(7);

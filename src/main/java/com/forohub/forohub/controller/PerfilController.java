@@ -2,6 +2,7 @@ package com.forohub.forohub.controller;
 
 import com.forohub.forohub.dtos.CursoDTO;
 import com.forohub.forohub.dtos.PerfilDTO;
+import com.forohub.forohub.dtos.PerfilResponseDTO;
 import com.forohub.forohub.service.implement.PerfilServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,10 @@ public class PerfilController {
         PerfilDTO perfilDTO = perfilService.savePerfil(perfil,authHeader);
         URI uri = uriBuilder.path("profile/{id}").buildAndExpand(perfilDTO.getUuid()).toUri();
         return ResponseEntity.created(uri).body(perfilDTO);
+    }
+    @GetMapping
+    public ResponseEntity<PerfilResponseDTO> getPerfil(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader, @RequestParam String id){
+        PerfilResponseDTO perfil = perfilService.getPerfil(authHeader,id);
+        return ResponseEntity.ok().body(perfil);
     }
 }
