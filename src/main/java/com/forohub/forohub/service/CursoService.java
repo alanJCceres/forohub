@@ -10,5 +10,4 @@ public interface CursoService {
     public CursoDTO actualizarCurso(CursoDTO curso);
     public CursoDTO eliminarCurso(CursoDTO curso);
     public List<CursoDTO> listarCursos();
-    public CursoDTO getCurso(UUID id);
 }
