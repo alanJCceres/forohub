@@ -7,13 +7,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -26,5 +24,10 @@ public class CursoController {
         CursoDTO cursoDTO = cursoService.crearCurso(curso);
         URI uri = uriBuilder.path("curso/{id}").buildAndExpand(cursoDTO.getUuid()).toUri();
         return ResponseEntity.created(uri).body(cursoDTO);
+    }
+    @GetMapping
+    public ResponseEntity<List<CursoDTO>> listarCursos() {
+        List<CursoDTO> cursos = cursoService.listarCursos();
+        return ResponseEntity.ok(cursos);
     }
 }

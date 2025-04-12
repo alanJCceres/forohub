@@ -8,6 +8,7 @@ import com.forohub.forohub.service.CursoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,9 +28,11 @@ public class CursoServiceImpl implements CursoService {
         return null;
     }
     public List<CursoDTO> listarCursos(){
-        return null;
-    }
-    public CursoDTO getCurso(UUID id){
-        return null;
+        List<Curso> cursos = cursoRepository.findAll();
+        List<CursoDTO> cursoDTOs = new ArrayList<>();
+        for (Curso curso : cursos) {
+            cursoDTOs.add(cursoMapper.toDTO(curso));
+        }
+        return cursoDTOs;
     }
 }
